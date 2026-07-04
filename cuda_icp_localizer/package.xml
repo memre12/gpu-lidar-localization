@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>cuda_icp_localizer</name>
+  <version>1.0.0</version>
+  <description>GPU-accelerated LiDAR scan matching localization for ROS 2 (CUDA ICP against a prebuilt PCD map)</description>
+  <maintainer email="demirme22@itu.edu.tr">Emre Demir</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>pcl_conversions</depend>
+  <depend>pcl_ros</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

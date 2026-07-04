@@ -1,0 +1,28 @@
+# colcon / ROS 2 build artifacts
+build/
+install/
+log/
+
+# large data files (map + bags are hosted on Drive, see README)
+lidar_data/
+*.db3
+*.pcd
+
+# CUDA / C++ build leftovers
+*.o
+*.so
+*.a
+*.ptx
+*.cubin
+*.fatbin
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# editors / OS
+.vscode/
+.idea/
+*~
+*.swp
+.DS_Store
