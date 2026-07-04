@@ -94,7 +94,7 @@ ScanMatchingNode::ScanMatchingNode() : Node("icp_localizer")
     "/icp_localizer/target_cloud", target_qos);
 
   // Create publisher for estimated pose
-  pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseStamped>(
+  pose_pub_ = this->create_publisher<geometry_msgs::msg::PoseWithCovarianceStamped>(
     "/icp_localizer/estimated_pose", 10);
 
   // TF broadcaster
@@ -475,16 +475,23 @@ float ScanMatchingNode::publish_results(const std_msgs::msg::Header& header, flo
   aligned_cloud_pub_->publish(output_msg);
 
   // Publish pose
-  geometry_msgs::msg::PoseStamped pose_msg;
+  geometry_msgs::msg::PoseWithCovarianceStamped pose_msg;
   pose_msg.header = header;
   pose_msg.header.frame_id = target_frame_;
-  pose_msg.pose.position.x = position.x();
-  pose_msg.pose.position.y = position.y();
-  pose_msg.pose.position.z = position.z();
-  pose_msg.pose.orientation.w = quat.w();
-  pose_msg.pose.orientation.x = quat.x();
-  pose_msg.pose.orientation.y = quat.y();
-  pose_msg.pose.orientation.z = quat.z();
+  pose_msg.pose.pose.position.x = position.x();
+  pose_msg.pose.pose.position.y = position.y();
+  pose_msg.pose.pose.position.z = position.z();
+  pose_msg.pose.pose.orientation.w = quat.w();
+  pose_msg.pose.pose.orientation.x = quat.x();
+  pose_msg.pose.pose.orientation.y = quat.y();
+  pose_msg.pose.pose.orientation.z = quat.z();
+  // Diagonal covariance: [x, y, z, roll, pitch, yaw]
+  pose_msg.pose.covariance[0] = 0.01;   // x
+  pose_msg.pose.covariance[7] = 0.01;   // y
+  pose_msg.pose.covariance[14] = 0.01;  // z
+  pose_msg.pose.covariance[21] = 0.0025; // roll
+  pose_msg.pose.covariance[28] = 0.0025; // pitch
+  pose_msg.pose.covariance[35] = 0.0025; // yaw
   pose_pub_->publish(pose_msg);
 
   // Publish TF

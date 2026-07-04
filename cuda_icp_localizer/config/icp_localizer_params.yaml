@@ -13,12 +13,12 @@ icp_localizer:
     # Target Configuration
     # Download the map (gazebo_map.pcd) from the Drive link in the README
     # and point this to where you saved it. Empty = use first cloud as map.
-    target_pcd_file: "/home/emre/ws_gae/src/launch/map/sim_map/gazebo_map.pcd"
+    target_pcd_file: "/home/emre/gpu-lidar-localization/gazebo_map.pcd"
     
     # Algorithm Parameters
-    max_iterations: 60                       # Maximum ICP iterations (stops early on convergence)
-    convergence_threshold: 0.005            # Stop when per-iteration motion falls below this (m + rad)
-    max_points: 150000                       # Maximum source points to process
+    max_iterations: 20                       # Maximum ICP iterations (stops early on convergence)
+    convergence_threshold: 0.05            # Stop when per-iteration motion falls below this (m + rad)
+    max_points: 50000                       # Maximum source points to process
     max_target_points: 50000                 # Maximum target (map) points on GPU
     downsample_size: 0.1                    # Voxel size for map downsampling (meters)
     local_map_radius: 60.0                  # Radius (m) of the map crop kept on the GPU
@@ -35,7 +35,7 @@ icp_localizer:
     # true  -> localization starts automatically from the pose below
     # false -> waits until a pose is set via RViz "2D Pose Estimate" (/initialpose)
     # In both modes a new /initialpose message re-initializes the localizer.
-    use_initial_pose: true
+    use_initial_pose: false
     initial_x: 179.123                      # Auto-start X position (meters)
     initial_y: 112.539                      # Auto-start Y position (meters)
     initial_z: 0.0                          # Auto-start Z position (meters)

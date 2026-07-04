@@ -21,7 +21,7 @@ credits.
 
 | Topic | Type | Description |
 |---|---|---|
-| `/icp_localizer/estimated_pose` | `geometry_msgs/PoseStamped` | Estimated pose in the map frame |
+| `/icp_localizer/estimated_pose` | `geometry_msgs/PoseWithCovarianceStamped` | Estimated pose in the map frame |
 | `/icp_localizer/aligned_cloud` | `sensor_msgs/PointCloud2` | The scan transformed into the map frame by the ICP result |
 | `/icp_localizer/target_cloud` | `sensor_msgs/PointCloud2` | Downsampled map (transient local QoS, published once) |
 | `/tf` | `map` → `lidar_front` | Broadcast when `publish_tf` is true |
