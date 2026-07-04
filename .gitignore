@@ -19,6 +19,8 @@ CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
 Makefile
+# ...but keep the top-level Docker workflow Makefile
+!/Makefile
 
 # editors / OS
 .vscode/

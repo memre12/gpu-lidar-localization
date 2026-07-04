@@ -8,7 +8,7 @@ Panels:
         - /Aligned Cloud1
         - /Estimated Pose1
       Splitter Ratio: 0.5
-    Tree Height: 349
+    Tree Height: 353
   - Class: rviz_common/Views
     Expanded:
       - /Current View1
@@ -92,8 +92,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 8.42769718170166
-        Min Value: -8.771135330200195
+        Max Value: 7.492075443267822
+        Min Value: -14.349238395690918
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -215,7 +215,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 44.50645446777344
+      Distance: 40.20941925048828
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -241,7 +241,7 @@ Window Geometry:
   Height: 900
   Hide Left Dock: false
   Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000100000000000001cb0000032afc0200000002fb000000100044006900730070006c006100790073010000003d000001e8000000c900fffffffb0000000a00560069006500770073010000022b0000013c000000a400ffffff000003a70000032a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd0000000100000000000001cb0000032efc0200000002fb000000100044006900730070006c006100790073010000003b000001ea000000c700fffffffb0000000a00560069006500770073010000022b0000013e000000a000ffffff000003a70000032e00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Views:
     collapsed: false
   Width: 1400

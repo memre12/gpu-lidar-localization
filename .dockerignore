@@ -1,0 +1,18 @@
+# Build artifacts
+build/
+install/
+log/
+cuda_icp_localizer/build/
+cuda_icp_localizer/install/
+cuda_icp_localizer/log/
+
+# Large data files (hosted on Drive, see README)
+lidar_data/
+*.pcd
+*.db3
+
+# VCS / editors
+.git/
+.github/
+.vscode/
+.idea/

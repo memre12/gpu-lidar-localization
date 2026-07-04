@@ -13,7 +13,7 @@ icp_localizer:
     # Target Configuration
     # Download the map (gazebo_map.pcd) from the Drive link in the README
     # and point this to where you saved it. Empty = use first cloud as map.
-    target_pcd_file: "/home/emre/gpu-lidar-localization/gazebo_map.pcd"
+    target_pcd_file: "install/cuda_icp_localizer/share/cuda_icp_localizer/maps/gazebo_map.pcd"
     
     # Algorithm Parameters
     max_iterations: 20                       # Maximum ICP iterations (stops early on convergence)

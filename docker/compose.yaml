@@ -1,0 +1,47 @@
+name: gpu-lidar-localization
+
+services:
+  localizer:
+    image: gpu-lidar-localization:dev
+    container_name: gpu-lidar-localization
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: base
+    # Share the host network so ROS 2 (DDS) traffic flows between the
+    # container and nodes running on the host without any extra setup.
+    network_mode: host
+    ipc: host
+    environment:
+      # Root-in-container and user-on-host Fast DDS shared-memory segments
+      # are mutually inaccessible, so restrict DDS to UDP. Also baked into
+      # the image; set here too so it applies without a rebuild.
+      FASTRTPS_DEFAULT_PROFILES_FILE: /ws/docker/fastdds_no_shm.xml
+      DISPLAY: ${DISPLAY:-:0}
+      QT_X11_NO_MITSHM: "1"
+      NVIDIA_DRIVER_CAPABILITIES: all
+    volumes:
+      # Workspace: the repository is bind-mounted, builds happen in-container.
+      - ..:/ws
+      # Keep in-container colcon artifacts out of the host checkout so host
+      # and container builds never mix.
+      - ws_build:/ws/cuda_icp_localizer/build
+      - ws_install:/ws/cuda_icp_localizer/install
+      - ws_log:/ws/cuda_icp_localizer/log
+      # X11 socket for RViz.
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    stdin_open: true
+    tty: true
+    command: sleep infinity
+
+volumes:
+  ws_build:
+  ws_install:
+  ws_log:

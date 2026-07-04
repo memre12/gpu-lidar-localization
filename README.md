@@ -22,6 +22,7 @@ LiDAR, ~5,700 points/scan, 50,000-point map on the GPU):
 |---|---|
 | [`cuda_icp_localizer/`](cuda_icp_localizer/) | **ROS 2 (Humble) package** — the localization node, launch file, RViz config and parameters |
 | [`src/`](src/) | CUDA ICP core: correspondence kernels, thrust reductions, SVD (Kabsch) solve |
+| [`docker/`](docker/) | Docker image (CUDA 12 + ROS 2 Humble) and Compose setup, driven by the top-level `Makefile` |
 
 ## Requirements
 
@@ -41,6 +42,35 @@ After downloading, set `target_pcd_file` in
 `cuda_icp_localizer/config/icp_localizer_params.yaml` to the PCD path.
 
 ## Build & run
+
+### Docker (recommended)
+
+Requires the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
+The container runs with the host network (ROS 2 nodes inside and outside the
+container see each other directly), GPU access and X11 forwarding for RViz.
+
+```bash
+make build    # build the image (CUDA 12 + ROS 2 Humble)
+make up       # start the container in the background
+make colcon   # colcon build inside the container
+make shell    # open a shell inside the container
+make down     # stop the container
+```
+
+The repository is mounted at `/ws` inside the container; in-container build
+artifacts live in named Docker volumes, so they never mix with host builds.
+Note that paths in `icp_localizer_params.yaml` (e.g. `target_pcd_file`) must
+use container paths — the map at the repository root is `/ws/gazebo_map.pcd`.
+Inside the shell the workspace is already sourced — launch directly:
+
+```bash
+ros2 launch cuda_icp_localizer icp_localizer.launch.py
+```
+
+A [CI workflow](.github/workflows/docker.yml) builds the image and compiles
+the package on every push.
+
+### Native
 
 ```bash
 cd cuda_icp_localizer
@@ -84,8 +114,8 @@ behind the sensor even if an occasional scan takes longer to converge.
 
 ## Roadmap
 
-- [ ] Docker image (CUDA + ROS 2 Humble) with in-container `colcon build`
-- [ ] CI pipeline that builds the image on every push
+- [x] Docker image (CUDA + ROS 2 Humble) with in-container `colcon build`
+- [x] CI pipeline that builds the image on every push
 - [ ] Demo GIF/screenshot in the README
 
 ## Credits

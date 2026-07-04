@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Disable the Fast DDS shared-memory transport inside the container.
+
+  The container runs as root while host-side ROS 2 nodes run as a regular
+  user. Fast DDS creates its /dev/shm segments with owner-only write
+  permissions, so cross-user SHM communication fails silently: discovery
+  (UDP multicast) works, but no topic data flows. Restricting the
+  participant to UDPv4 avoids the shared-memory path entirely.
+-->
+<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+    <transport_descriptors>
+        <transport_descriptor>
+            <transport_id>udp_only</transport_id>
+            <type>UDPv4</type>
+        </transport_descriptor>
+    </transport_descriptors>
+    <participant profile_name="udp_only_participant" is_default_profile="true">
+        <rtps>
+            <userTransports>
+                <transport_id>udp_only</transport_id>
+            </userTransports>
+            <useBuiltinTransports>false</useBuiltinTransports>
+        </rtps>
+    </participant>
+</profiles>

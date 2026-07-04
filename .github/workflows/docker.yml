@@ -1,0 +1,35 @@
+name: Docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Build image (CUDA + ROS 2 Humble + colcon build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # The CUDA devel base image plus ROS 2 desktop is large; reclaim space
+      # on the runner before building.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune -af
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          target: build
+          push: false
+          tags: gpu-lidar-localization:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

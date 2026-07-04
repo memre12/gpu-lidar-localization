@@ -138,6 +138,11 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+install(DIRECTORY
+  maps
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 # Install config files
 install(DIRECTORY
   config
