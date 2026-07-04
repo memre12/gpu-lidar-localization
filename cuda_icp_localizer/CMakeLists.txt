@@ -138,10 +138,14 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
-install(DIRECTORY
-  maps
-  DESTINATION share/${PROJECT_NAME}/
-)
+# Map files are gitignored (hosted on Drive, see README), so the maps
+# directory may not exist in CI/Docker builds
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/maps)
+  install(DIRECTORY
+    maps
+    DESTINATION share/${PROJECT_NAME}/
+  )
+endif()
 
 # Install config files
 install(DIRECTORY
