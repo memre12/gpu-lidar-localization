@@ -38,8 +38,20 @@ recorded in the simulation are hosted on Google Drive:
 
 - **[Download map + sample bag (Google Drive)](https://drive.google.com/drive/folders/1_-O-QYGeOHzxYxyVDFM6r3RSKeE7fwxj?usp=sharing)**
 
-After downloading, set `target_pcd_file` in
-`cuda_icp_localizer/config/icp_localizer_params.yaml` to the PCD path.
+After downloading:
+
+1. Put `gazebo_map.pcd` into the `cuda_icp_localizer/maps/` folder — the
+   default `target_pcd_file` in
+   `cuda_icp_localizer/config/icp_localizer_params.yaml` already points there
+   (create the folder if it doesn't exist; it is gitignored).
+2. Play the sample rosbag to feed the localizer (it publishes
+   `/lidar_front/points_in`):
+
+```bash
+ros2 bag play <path-to-downloaded-bag>
+```
+
+To use a different map location, change `target_pcd_file` in the YAML.
 
 ## Build & run
 
@@ -60,7 +72,8 @@ make down     # stop the container
 The repository is mounted at `/ws` inside the container; in-container build
 artifacts live in named Docker volumes, so they never mix with host builds.
 Note that paths in `icp_localizer_params.yaml` (e.g. `target_pcd_file`) must
-use container paths — the map at the repository root is `/ws/gazebo_map.pcd`.
+use container paths — the map placed in `cuda_icp_localizer/maps/` is visible
+inside the container at `/ws/cuda_icp_localizer/maps/gazebo_map.pcd`.
 Inside the shell the workspace is already sourced — launch directly:
 
 ```bash
