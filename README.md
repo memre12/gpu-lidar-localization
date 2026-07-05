@@ -1,12 +1,19 @@
 # GPU-Accelerated LiDAR Localization (CUDA ICP + ROS 2)
 
 Real-time, map-based LiDAR localization for autonomous vehicles. Incoming
-LiDAR scans are aligned against a prebuilt point cloud map with a CUDA
-implementation of the Iterative Closest Point (ICP) algorithm, giving a
+LiDAR scans are aligned against a **pre-generated point cloud map** with a
+CUDA implementation of the Iterative Closest Point (ICP) algorithm, giving a
 6-DoF pose estimate in a few milliseconds per scan.
 
-Tested end-to-end in a Gazebo simulation of an autonomous vehicle (Ouster
-LiDAR, ~5,700 points/scan, 50,000-point map on the GPU):
+This is a pure localization node — it does no mapping itself. The map is a
+PCD file built beforehand with any LiDAR SLAM pipeline, e.g.
+[LIO-SAM](https://github.com/TixiaoShan/LIO-SAM) or
+[lidarslam_ros2](https://github.com/rsasaki0109/lidarslam_ros2); the localizer
+loads it once at startup and tracks the vehicle inside it.
+
+Tested end-to-end both on real Ouster LiDAR data and in a Gazebo simulation
+of an autonomous vehicle (see the demos below). In the simulation
+(~5,700 points/scan, 50,000-point map on the GPU):
 
 - **5–30 ms per scan** while tracking (2–5 ICP iterations) on an RTX 3060
   Laptop GPU — comfortably real-time at 10 Hz scan rate.
@@ -14,7 +21,33 @@ LiDAR, ~5,700 points/scan, 50,000-point map on the GPU):
 - Compared against a CPU-based localizer on the same route, the GPU ICP
   localizer stayed noticeably more stable, especially through sharp turns.
 
-<!-- TODO: add a demo GIF/screenshot here (RViz: white map, orange aligned scan, green pose arrow) -->
+## Demos
+
+In both clips RViz shows the pre-generated map as the height-colored (green)
+point cloud, the ICP-aligned live scan as the yellow rings and the estimated
+pose as the red arrow.
+
+### Real data — Ouster LiDAR
+
+Live scans from an Ouster sensor, localized against a point cloud map that
+was generated beforehand from the same environment with a LiDAR SLAM
+pipeline (LIO-SAM / lidarslam_ros2). The localizer only consumes the
+pre-built PCD and the raw `/ouster/points` scans.
+
+In this clip the initial pose is **deliberately set wrong** — watch the scan
+snap onto the map almost instantly. Because the ICP scan matching runs on
+the GPU, each correction costs only a few milliseconds, so the estimate
+recovers within a scan or two instead of drifting:
+
+![Localization on real Ouster LiDAR data](cuda_icp_localizer/img/real_data_test.gif)
+
+### Simulation — Gazebo
+
+The Gazebo dataset from the [Google Drive link](#map--sample-data) below: a
+simulated LiDAR on an autonomous vehicle, localizing in the map of the
+simulation world (`gazebo_map.pcd`) while the sample rosbag plays:
+
+![Localization in the Gazebo simulation](cuda_icp_localizer/img/gazebo_velodyne_lidar_loc.gif)
 
 ## Repository layout
 
@@ -40,18 +73,38 @@ recorded in the simulation are hosted on Google Drive:
 
 After downloading:
 
-1. Put `gazebo_map.pcd` into the `cuda_icp_localizer/maps/` folder — the
-   default `target_pcd_file` in
-   `cuda_icp_localizer/config/icp_localizer_params.yaml` already points there
-   (create the folder if it doesn't exist; it is gitignored).
-2. Play the sample rosbag to feed the localizer (it publishes
+1. Put `gazebo_map.pcd` into the `cuda_icp_localizer/maps/` folder (create
+   the folder if it doesn't exist; it is gitignored).
+2. In `cuda_icp_localizer/config/icp_localizer_params.yaml` point the
+   localizer at the simulation data — the shipped defaults are configured
+   for the real-sensor setup shown in the demo above:
+
+   ```yaml
+   source_topic: "/lidar_front/points_in"
+   target_pcd_file: "install/cuda_icp_localizer/share/cuda_icp_localizer/maps/gazebo_map.pcd"
+   ```
+
+3. Play the sample rosbag to feed the localizer (it publishes
    `/lidar_front/points_in`):
 
 ```bash
 ros2 bag play <path-to-downloaded-bag>
 ```
 
-To use a different map location, change `target_pcd_file` in the YAML.
+### Using your own map (real sensor)
+
+Any pre-generated PCD map works — record a drive with your sensor, build the
+map offline with a LiDAR SLAM pipeline such as
+[LIO-SAM](https://github.com/TixiaoShan/LIO-SAM) or
+[lidarslam_ros2](https://github.com/rsasaki0109/lidarslam_ros2), export it as
+a `.pcd`, then in `cuda_icp_localizer/config/icp_localizer_params.yaml`:
+
+- point `target_pcd_file` at your map,
+- set `source_topic` to your sensor's point cloud topic (the shipped
+  default is `/ouster/points`, an Ouster sensor),
+- set the initial pose (or use RViz's **2D Pose Estimate**).
+
+This is exactly the setup shown in the real-data demo above.
 
 ## Build & run
 
@@ -101,8 +154,9 @@ the pose configured in the YAML. Set it to `false` to have the node wait until
 you provide a pose with RViz's **2D Pose Estimate** tool instead. In both
 modes you can re-initialize at any time from RViz.
 
-RViz opens preconfigured: the map in white, the ICP-aligned scan in orange and
-the estimated pose as a green arrow.
+RViz opens preconfigured: the map and the ICP-aligned scan as height-colored
+point clouds and the estimated pose as a red arrow — the same view as in the
+demo clips above.
 
 Full topic/parameter reference: [`cuda_icp_localizer/README.md`](cuda_icp_localizer/README.md).
 
@@ -129,7 +183,9 @@ behind the sensor even if an occasional scan takes longer to converge.
 
 - [x] Docker image (CUDA + ROS 2 Humble) with in-container `colcon build`
 - [x] CI pipeline that builds the image on every push
-- [ ] Demo GIF/screenshot in the README
+- [x] Demo GIFs in the README (Gazebo simulation + real Ouster data)
+- [x] Validated on a real vehicle with an Ouster LiDAR and a LIO-SAM /
+      lidarslam_ros2 pre-generated map
 
 ## Credits
 

@@ -17,12 +17,12 @@ icp_localizer:
     
     # Algorithm Parameters
     max_iterations: 20                       # Maximum ICP iterations (stops early on convergence)
-    convergence_threshold: 0.05            # Stop when per-iteration motion falls below this (m + rad)
-    max_points: 50000                       # Maximum source points to process
+    convergence_threshold: 0.01           # Stop when per-iteration motion falls below this (m + rad)
+    max_points: 100000                       # Maximum source points to process
     max_target_points: 50000                 # Maximum target (map) points on GPU
     downsample_size: 0.1                    # Voxel size for map downsampling (meters)
     local_map_radius: 60.0                  # Radius (m) of the map crop kept on the GPU
-    max_scan_range: 45.0                    # Drop scan points beyond this range (m)
+    max_scan_range: 75.0                    # Drop scan points beyond this range (m)
     min_scan_range: 1.5                     # Drop scan points closer than this (ego-vehicle hits)
     correspondence_max_dist: 5.0            # Reject ICP pairs farther apart than this (m)
     
