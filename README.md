@@ -179,14 +179,6 @@ rejects implausible jumps, and publishes the pose, the aligned cloud and the
 consumed with a keep-last-1, best-effort QoS so the localizer never lags
 behind the sensor even if an occasional scan takes longer to converge.
 
-## Roadmap
-
-- [x] Docker image (CUDA + ROS 2 Humble) with in-container `colcon build`
-- [x] CI pipeline that builds the image on every push
-- [x] Demo GIFs in the README (Gazebo simulation + real Ouster data)
-- [x] Validated on a real vehicle with an Ouster LiDAR and a LIO-SAM /
-      lidarslam_ros2 pre-generated map
-
 ## Credits
 
 This project builds on
